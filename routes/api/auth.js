@@ -7,5 +7,5 @@ const { AuthController } = require("../../controllers");
 //@desc Test route
 //@access Public
 router.get("/", auth, AuthController.getAuthUser);
-
+router.post("/", AuthController.validationLogin, AuthController.Login);
 module.exports = router;

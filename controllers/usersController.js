@@ -13,7 +13,7 @@ const validationcheck = [
   check(
     "password",
     "Please enter a password with 6 or more characters"
-  ).isLength({
+  ).isLength({ 
     min: 6,
   }),
 ];

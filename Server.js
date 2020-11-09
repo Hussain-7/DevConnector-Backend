@@ -4,6 +4,7 @@ const connectDb = require("./config/db");
 const routes = require("./routes/api");
 const app = express();
 
+
 //Connect Database
 
 connectDB();
