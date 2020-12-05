@@ -1,6 +1,6 @@
 module.exports = {
-    userRoutes: require('./users'),
-    authRoutes: require('./auth'),
-    profileRoutes: require('./profile'),
-    postsRoutes: require('./posts')
-}
+  userRoutes: require("./userRoutes"),
+  authRoutes: require("./authRoutes"),
+  profileRoutes: require("./profileRoutes"),
+  postRoutes: require("./postRoutes"),
+};

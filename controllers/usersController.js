@@ -13,7 +13,7 @@ const validationcheck = [
   check(
     "password",
     "Please enter a password with 6 or more characters"
-  ).isLength({ 
+  ).isLength({
     min: 6,
   }),
 ];
@@ -67,8 +67,18 @@ const postUsers = async (req, res, next) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+const getAllUsers = async (req, res, next) => {
+  try {
+    const Users = await User.find();
+    res.json(Users);
+  } catch (error) {
+    res.status(500);
+    console.log(error.message);
+  }
+};
 
 module.exports = {
   postUsers: postUsers,
+  getAllUsers: getAllUsers,
   validationcheck: validationcheck,
 };

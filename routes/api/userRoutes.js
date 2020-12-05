@@ -7,4 +7,13 @@ const { UserController } = require("../../controllers");
 //@access Public
 router.post("/", UserController.validationcheck, UserController.postUsers);
 
+//@route Get api/users
+//@desc Get all user
+//@access Public
+router.get("/", UserController.getAllUsers);
+
+//@route Get api/users
+//@desc Get all user
+//@access Public
+router.get("/", UserController.getAllUsers);
 module.exports = router;
