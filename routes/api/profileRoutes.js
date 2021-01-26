@@ -9,7 +9,7 @@ const profileController = require("../../controllers/profileController");
 //@route Get api/profile/me
 //@desc Get current Users profile
 //@access Private
-router.get("/loggedUser", auth, ProfileController.getCurrentUserProfile);
+router.get("/me", auth, ProfileController.getCurrentUserProfile);
 
 //@route post api/profile
 //@desc Create and update User profile
