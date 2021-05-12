@@ -4,8 +4,6 @@ const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const config = require("config");
-const { json } = require("express");
 //to pass in post user request to it checks for name,email,password and return array after running validationResult method on req
 const validationcheck = [
   check("name", "Name is required").not().isEmpty(),
@@ -55,7 +53,7 @@ const postUsers = async (req, res, next) => {
     };
     jwt.sign(
       payload,
-      config.get("jwtSecret"),
+      process.env.jwtSecret,
       { expiresIn: 36000 },
       (err, token) => {
         if (err) throw err;

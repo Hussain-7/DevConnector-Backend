@@ -1,36 +1,51 @@
+require("dotenv").config({ path: ".env.dev" });
 const express = require("express");
-const connectDB = require("./config/db");
 const routes = require("./routes/api");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const port = process.env.PORT || 5000;
+
+// * express app
 const app = express();
 
-//Connect Database
-
-connectDB();
-
 //Init Middleware
-app.use(express.json({ extended: false }));
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3000/");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin,X-requested-With,Content-Type,Accept,Authorization"
-//   );
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cors());
 
-//   if (req.method == "OPTIONS") {
-//     res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
-//     return res.status(200).json({});
-//   }
-//   next();
-// });
+app.options((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin,X-REquested-with,Authorization"
+  );
+  res.header("Access-Control-Allow-Origin", "PUT,POST,PATCH,DELETE,GET");
+  res.status(200).json({});
+});
 
-app.get("/", (req, res) => res.send("API Running"));
-
+app.get("/", (req, res, next) => {
+  res.status(200).json({ message: "Backend is live" });
+});
 //Define Routes
 app.use("/api/users", routes.userRoutes);
 app.use("/api/posts", routes.postRoutes);
 app.use("/api/profile", routes.profileRoutes);
 app.use("/api/auth", routes.authRoutes);
 
-const PORT = process.env.PORT || 5000;
+app.use("*", (req, res, next) => {
+  res.status(404).json({ message: "Not Found" });
+});
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+//Connect Database
+mongoose
+  .connect(process.env.DB, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
+  .then(() => console.log("Connected to MongoDB"));
+
+app.listen(port, () => {
+  console.log(`Server Listening on http://localhost: ${port}`);
+});

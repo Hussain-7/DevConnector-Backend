@@ -3,6 +3,7 @@ const { check, validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const { post } = require("request");
 const e = require("express");
+
 const addPosts = async (req, res, next) => {
   // res.send("testing");
   const err = validationResult(req);

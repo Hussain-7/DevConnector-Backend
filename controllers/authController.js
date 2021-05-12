@@ -2,7 +2,6 @@ const { check, validationResult } = require("express-validator");
 const { User } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 
 const validationLogin = [
   check("email", "Please enter a valid email").isEmail(),
@@ -46,7 +45,7 @@ const Login = async (req, res, next) => {
     };
     jwt.sign(
       payload,
-      config.get("jwtSecret"),
+      process.env.jwtSecret,
       { expiresIn: 36000 },
       (err, token) => {
         if (err) throw err;

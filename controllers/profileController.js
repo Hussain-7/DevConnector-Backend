@@ -2,7 +2,6 @@ const { Profile, User } = require("../models");
 const { check, validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const request = require("request");
-const config = require("config");
 //@route Get api/profile/me
 //@desc Get current Users profile
 //@access Private
@@ -179,15 +178,8 @@ const updateEducation = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const {
-    school,
-    degree,
-    fieldofstudy,
-    from,
-    to,
-    current,
-    description,
-  } = req.body;
+  const { school, degree, fieldofstudy, from, to, current, description } =
+    req.body;
 
   const neweducation = {
     school,
@@ -230,8 +222,8 @@ const getGithubRepos = async (req, res, next) => {
       uri: `https://api.github.com/users/${
         req.params.username
       }/repos?per_page=5&sort=created:asc&client_id=${config.get(
-        "githubClientId"
-      )}&client_secret=${config.get("githubSecret")}`,
+        process.env.githubClientId
+      )}&client_secret=${process.env.githubSecret}`,
       mehod: "GET",
       headers: { "user-agent": "node.js" },
     };
