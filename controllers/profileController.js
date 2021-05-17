@@ -216,14 +216,11 @@ const deleteEducation = async (req, res, next) => {
 const getGithubRepos = async (req, res, next) => {
   try {
     const options = {
-      uri: `https://api.github.com/users/${
-        req.params.username
-      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
-        process.env.githubClientId
-      )}&client_secret=${process.env.githubSecret}`,
+      uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${process.env.githubClientId}&client_secret=${process.env.githubSecret}`,
       mehod: "GET",
       headers: { "user-agent": "node.js" },
     };
+    console.log(options);
     request(options, (error, response, body) => {
       if (response.statusCode != 200) {
         return res.status(404).json({ msg: "No Github Profile Found" });
