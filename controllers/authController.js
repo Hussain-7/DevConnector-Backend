@@ -9,7 +9,6 @@ const validationLogin = [
 ];
 
 const getAuthUser = async (req, res, next) => {
-  console.log(req.user);
   try {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
@@ -30,7 +29,9 @@ const Login = async (req, res, next) => {
     //See if user exists
     let user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "No Account with this email exists!" }] });
     }
     const isMatch = await bcrypt.compare(password, user.password);
 

@@ -1,4 +1,4 @@
-const { Profile, User } = require("../models");
+const { Profile, User, Post } = require("../models");
 const { check, validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const request = require("request");
@@ -15,8 +15,7 @@ const getCurrentUserProfile = async (req, res, next) => {
     if (!profile) {
       return res.status(400).json({ msg: "There is no profile for this user" });
     }
-
-    res.json(profile);
+    res.status(200).json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -68,7 +67,6 @@ const createUser = async (req, res, next) => {
   if (facebook) profileFields.social.facebook = facebook;
   if (linkedin) profileFields.social.linkedin = linkedin;
   if (instagram) profileFields.social.instagram = instagram;
-  console.log(profileFields);
   try {
     let profile = await Profile.findOne({ user: req.user.id });
     if (profile) {
@@ -78,25 +76,22 @@ const createUser = async (req, res, next) => {
         { $set: profileFields },
         { new: true }
       );
-      console.log("Successfully Updated user Object");
-      return res.json({ profile: profile });
+      return res.status(200).json(profile);
     }
     //create
     //Using Profile as an constructor
     profile = new Profile(profileFields);
     const resprofile = profile.populate("user");
     await profile.save().populate("user");
-    console.log("Successfully created a new User Object");
     res.json(resprofile);
   } catch (error) {
-    console.log(error.message);
     res.status(500).send("Server Error");
   }
 };
 const getAllProfiles = async (req, res, next) => {
   try {
     const profiles = await Profile.find().populate("user", ["name", "avatar"]);
-    res.json(profiles);
+    res.status(200).json(profiles);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -111,7 +106,7 @@ const getProfileById = async (req, res, next) => {
     if (!profile) {
       return res.status(400).json({ message: "There is no profile" });
     }
-    res.json(profile);
+    res.status(200).json(profile);
   } catch (error) {
     if ((error.kind = "ObjectId")) {
       return res.status(400).json({ message: "There is no profile" });
@@ -121,10 +116,12 @@ const getProfileById = async (req, res, next) => {
 };
 const deleteProfile = async (req, res, next) => {
   try {
+    //Delete User Posts
+    await Post.deleteMany({ user: req.user.id });
     //Deleting Profile
-    await Profile.findOneAndRemove({ user: req.params.id });
+    await Profile.findOneAndRemove({ user: req.user.id });
     //Delete User
-    await User.findOneAndRemove({ _id: req.params.id });
+    await User.findOneAndRemove({ _id: req.user.id });
     res.status(200).json({ message: "Profile deleted Succesfuly!!!" });
   } catch (error) {
     console.error(error.message);
@@ -151,14 +148,13 @@ const updateExperience = async (req, res, next) => {
     const profile = await Profile.findOne({ user: req.user.id });
     profile.experience.unshift(newExp);
     await profile.save();
-    res.status(200).json({ profile });
+    res.status(200).json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
   }
 };
 const deleteExperience = async (req, res, next) => {
-  console.log(req.params);
   try {
     const profile = await Profile.findOne({ user: req.user.id });
     const removeIndex = profile.experience
@@ -195,7 +191,7 @@ const updateEducation = async (req, res, next) => {
     const profile = await Profile.findOne({ user: req.user.id });
     profile.education.unshift(req.body);
     await profile.save();
-    res.status(200).json({ profile });
+    res.status(200).json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -229,7 +225,6 @@ const getGithubRepos = async (req, res, next) => {
       headers: { "user-agent": "node.js" },
     };
     request(options, (error, response, body) => {
-      if (error) console.log(error);
       if (response.statusCode != 200) {
         return res.status(404).json({ msg: "No Github Profile Found" });
       }

@@ -39,7 +39,7 @@ router.get("/user/:user_id", profileController.getProfileById);
 //@route delete api/profile
 //@desc Get all Profile,user & posts
 //@access Private
-router.delete("/", profileController.deleteProfile);
+router.delete("/", auth, profileController.deleteProfile);
 
 //@route Put api/profile/experience
 //@desc Add or Update experiences
