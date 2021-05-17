@@ -30,7 +30,7 @@ const getCurrentUserProfile = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array() });
+    return res.status(400).json({ errors: errors.array() });
   }
   const {
     company,
@@ -84,9 +84,10 @@ const createUser = async (req, res, next) => {
     //create
     //Using Profile as an constructor
     profile = new Profile(profileFields);
-    await profile.save();
+    const resprofile = profile.populate("user");
+    await profile.save().populate("user");
     console.log("Successfully created a new User Object");
-    res.json(profile);
+    res.json(resprofile);
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server Error");

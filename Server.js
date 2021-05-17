@@ -23,6 +23,8 @@ app.options((req, res, next) => {
   res.status(200).json({});
 });
 
+app.use(require("morgan")("dev"));
+
 app.get("/", (req, res, next) => {
   res.status(200).json({ message: "Backend is live" });
 });
